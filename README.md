@@ -228,8 +228,8 @@ Batch GPU (V11):      34 seconds   (36x speedup, batch_size=7-8)
 ### Extended Dataset (303 tests, 3 huge tests: 85K, 55K, 35K SNPs)
 
 ```
-Sequential GPU (V10): ~31 minutes  (3 tests excluded via OOM)
-Batch GPU (V11):      ~35 minutes  (3 tests excluded, batch_size=5)
+Sequential GPU (V10): ~141  (3 tests excluded via OOM)
+Batch GPU (V11):      ~147 seconds  (3 tests excluded, batch_size=5)
 ```
 
 *Note: Extended dataset shows minimal speedup due to OOM-induced retry overhead with huge tests.*
