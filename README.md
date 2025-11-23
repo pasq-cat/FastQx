@@ -1,8 +1,8 @@
 # GPU-Accelerated QX Test for Population Genetics
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0%2B-blue)](https://www.r-project.org/)
-[![CUDA](https://img.shields.io/badge/CUDA-11.x%20%7C%2012.x-green)](https://developer.nvidia.com/cuda-toolkit)
+[![CUDA 13](https://img.shields.io/badge/CUDA-13.x-76B900?logo=nvidia)](https://developer.nvidia.com/cuda-toolkit)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
