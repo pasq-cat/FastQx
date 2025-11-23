@@ -220,7 +220,6 @@ Batch GPU (V11):      ~1.5 minutes  (30x speedup, batch_size=60)
 ### Stress Test Dataset (300 tests, 2000-5000 SNPs)
 
 ```
-CPU Baseline:        ~45 minutes (estimated)
 Sequential GPU (V10): 20.4 minutes (1225 sec)
 Batch GPU (V11):      34 seconds   (36x speedup, batch_size=7-8)
 ```
