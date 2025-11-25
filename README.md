@@ -8,34 +8,37 @@
 
 
 ---
-# **Version 0.9** Fast Pairwise Qₓ Statistic (CPU + GPU)
+# **Version 1** Fast Pairwise Qₓ Statistic (CPU + GPU)
 
-**Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **10-36x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
+**Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **13-31x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
 
 ### Method
-This repository provides highly optimized CPU and GPU (CUDA) implementations of the **pairwise Qₓ test**, a widely used simplification of the multivariate Qₓ statistic (Berg & Coop, 2014, PLoS Genetics) for scanning polygenic adaptation across population pairs (e.g., in the HGDP or 1000 Genomes datasets).
+**FastQx** implements the **pairwise Qₓ statistic** (Berg & Coop, 2014, PLoS Genetics) for detecting signatures of directional polygenic adaptation between two populations.
 
-Key features:
-- Numerator: squared difference in polygenic scores between two populations  
-  `Qx_num = [Σ βᵢ (p₁ᵢ − p₂ᵢ)]²`
-- Denominator: drift expectation using per-locus Hudson Fₛₜ weighting  
-  `Qx_denom = Σ βᵢ² × 2 p₁ᵢ p₂ᵢ × [(p₁ᵢ − p₂ᵢ)² / (4 p̄ᵢ (1 − p̄ᵢ))]`
-- Empirical p-values via **effect-size permutation null** (`sample(beta)`), which destroys directional covariance while preserving GWAS ascertainment properties — following the bias-robust approach introduced by **Sohail et al. (2019, eLife)** and used in subsequent pipelines (e.g., Colbran et al., 2021).
 
-The two-population simplification with Hudson Fₛₜ weighting is mathematically valid and commonly used in the literature for exhaustive pairwise testing (e.g., European vs. African height clines, pigmentation, etc.).
+$$
+\boxed{Q_x = \frac{\left( \sum_i \beta_i (p_{1i} - p_{2i}) \right)^2}{\sum_i \beta_i^2 \cdot 2 p_{1i} p_{2i} \cdot \hat{F}_{\text{ST},i}}}
+$$
 
-- Ideal for strong continental signals (height, pigmentation, etc.)
-- Drift estimated from GWAS SNPs (standard fast approximation)
+where:
+- Numerator: squared difference in polygenic scores
+- Denominator: expected variance under neutral drift
+- $\hat{F}_{\text{ST},i}$ = **Hudson (1992) estimator as per Bhatia et al. (2013, Genome Research, Eq. S7)**:
+  $$
+  \hat{F}_{\text{ST},i} = \frac{(p_{1i} - p_{2i})^2}{p_{1i}(1-p_{2i}) + p_{2i}(1-p_{1i})}
+  $$
+  (exact, unbiased for large samples)
 
-**v0.9 (current)**  
-- Drift estimated from GWAS SNPs (standard fast approximation)  
-- Ideal for **continental-scale comparisons** and strong clines  
-- Perfect for exploratory scans across thousands of traits
+**v1.0 (current) **
+- Optional neutral SNP panel → global neutral F_ST replaces per-locus F_ST
+- Eliminates ascertainment bias from GWAS SNPs
+- closer to the full multivariate Qₓ even for closely related populations
+- batched version Still 13–31× faster than CPU baseline (CUDA) depending on the dataset
 
-**v1.0 (in development)**  
-- Optional neutral SNP panel for unbiased drift estimation  
-- Full accuracy even for closely related populations (e.g., within Europe/Asia)  
-- Matches gold-standard multivariate implementations
+**v0.9 behavior preserved** (when no neutral SNPs provided):
+- Falls back to per-locus Hudson F_ST from GWAS SNPs (fast screening mode)
+
+Empirical p-values via **effect-size permutation null** (`sample(beta)`) — robust to GWAS stratification bias (Sohail et al., 2019, eLife).
 
 ## 📊 Performance Summary
  ### original 300 tests dataset with  each  having around 500 snps
@@ -45,30 +48,20 @@ The two-population simplification with Hudson Fₛₜ weighting is mathematicall
 | **version 1 (Sequential GPU)** | ~11 seconds | ~10x | 
 | **version 2 (Batch GPU)** | **~8 sec** | **~13x** |
 
+### out of memory error tests between sequential and batched gpu versions
 
 | Method | Time (303 tests ( same 300 + 3 problematic tests), 10k perms) | Speedup |  Batch size for a 16 gb 5060 ti | 
 |--------|------------------------------|---------|
-| **version 1 (Sequential GPU)** | **142 seconds** | **1x** | ---------|
-| **version 2 (Batch GPU)** | ~146 seconds | ~1 | 7|
+| **version 1 (Sequential GPU)** | **210 seconds** | **1x** | ---------|
+| **version 2 (Batch GPU)** | **~77 seconds** | ~2.8 | 7|
 
-*Stress test dataset: 100 tests with 2000-5000 SNPs each, 10,000 permutations*
+### Stress test dataset: 100 tests with 2000-5000 SNPs each, 10,000 permutations
 
 
 | Method | Time (100 tests, 10k perms) | Speedup |  Batch size for a 16 gb 5060 ti | 
 |--------|------------------------------|---------|---------|
-| **version 1 (Sequential GPU)** | ~603.85 seconds | 1x | ---------|
-| **version 2 (Batch GPU)** | **~17 sec** | **~35x** | 7|
----
-
-## 🔬 The QX Test
-
-The QX test ([Joshi et al., *Nature* 2015](https://doi.org/10.1038/nature14618)) measures heterogeneity in polygenic scores between populations by comparing:
-
-- **Observed variance** in allele frequency × effect size products
-- **Expected variance** under the null hypothesis (via permutation testing)
-
-This implementation accelerates the computationally intensive permutation testing using GPU parallel processing.
-
+| **version 1 (Sequential GPU)** | ~603.85 seconds | 1x | with out of memory errors|
+| **version 2 (Batch GPU)** | **~22 sec** | **~35x** | 7| no errors|
 ---
 
 
@@ -80,13 +73,13 @@ This implementation accelerates the computationally intensive permutation testin
 - Processes tests **one-by-one** on GPU
 - Each test gets **perfectly-sized** permutation matrix (`n_snps × n_perm`)
 - **Adaptive OOM handling**: Automatically excludes tests too large for GPU
-- **~10x faster** than CPU baseline
-- **Best for**: Heterogeneous datasets, limited GPU memory (<8GB)
+- **Best for**: small datasets, debugging phase.
 
 #### **version 2: Batch GPU** 🚀 *Fastest for uniform datasets*
 - Processes tests in **batches** (configurable batch size)
 - Each test gets its own matrix (no memory waste!)
 - **True parallel compute**: Queues all operations, single sync per batch
+- **faster** option
 - **Best for**: Large uniform datasets, sufficient GPU memory (16GB+)
 
 ### Key Innovations
@@ -207,33 +200,6 @@ results2 <- compute_Qx_batch_gpu_adaptive(...)
 
 ---
 
-## 📊 Benchmark Results
-
-### Original Dataset (300 tests, 400-600 SNPs)
-
-```
-CPU Baseline:        ~45 minutes
-Sequential GPU (V10): ~4.5 minutes  (10x speedup)
-Batch GPU (V11):      ~1.5 minutes  (30x speedup, batch_size=60)
-```
-
-### Stress Test Dataset (100 tests, 2000-5000 SNPs)
-
-```
-Sequential GPU (V10):  ~603 seconds
-Batch GPU (V11):      16 seconds   (36x speedup, batch_size=7-8)
-```
-
-### Extended Dataset (303 tests, 3 huge tests: 85K, 55K, 35K SNPs)
-
-```
-Sequential GPU (V10): ~141  (3 tests excluded via OOM)
-Batch GPU (V11):      ~147 seconds  (3 tests excluded, batch_size=5)
-```
-
-*Note: Extended dataset shows minimal speedup due to OOM-induced retry overhead with huge tests.*
-
----
 
 ## 🔍 Verification
 
@@ -252,28 +218,6 @@ All GPU implementations produce **numerically identical** results to the CPU bas
 ├── gpu_qx_demo.ipynb          # Main demonstration notebook
 ├── README.md                  # This file
 ```
-
----
-
-## 🛠️ Implementation Details
-
-### CPU Baseline (Original)
-- Pure R implementation
-- Reference for validation
-- `compute_Qx_cpu()`
-
-### version 1: Sequential GPU (Pure + Adaptive)
-- Generates permutation matrix **on GPU** using `cp$random$rand()` + `cp$argsort()`
-- Processes tests one-by-one
-- Adaptive OOM handling with automatic test exclusion
-- `compute_Qx_sequential_gpu_pure_adaptive()`
-
-### version 2: Batch GPU (Per-Test Matrices)
-- Generates **per-test** matrices for all tests in batch
-- Queues all GPU operations
-- **Single synchronization** at end of batch (true parallelism!)
-- Adaptive OOM: removes largest test and retries batch
-- `compute_Qx_batch_gpu_adaptive()`
 
 ---
 
@@ -302,7 +246,6 @@ The implementations in **FastQx** use a **pairwise (two-population) simplificati
 | Limitation | Explanation | Practical consequence |
 |------------|-------------|-----------------------|
 | **Ignores hierarchical population structure** | The full Qₓ uses a complete covariance matrix F estimated from neutral SNPs across all populations. The pairwise version implicitly assumes a star phylogeny (no shared drift between the two populations after their split). | Overestimates drift variance (and thus underestimates Qₓ) when the two populations are closely related (e.g., French vs. British, Tuscans vs. Spaniards). Signals can be diluted or lost. |
-| **Uses GWAS SNPs to estimate drift** | The denominator relies on per-locus Hudson Fₛₜ computed from the same GWAS loci instead of a separate set of neutral SNPs. | Slight upward bias in the denominator for traits under weak polygenic selection or with residual stratification. Usually minor, but not ideal. |
 | **Less powerful than full multivariate Qₓ for >2 populations** | With many populations, the full Qₓ (or PCA-based versions) extracts more signal by jointly modeling all covariances. | Pairwise scans require multiple-testing correction across ~1,200 pairs (Bonferroni ≈ 4×10⁻⁵), reducing sensitivity compared to a single multivariate test. |
 | **Permutation null assumes exchangeable effect sizes** | Shuffling betas destroys true signal but assumes the distribution of ascertained effect sizes is representative — a standard and accepted assumption (Sohail et al., 2019). | Remains robust to the main GWAS stratification biases that plagued early Qₓ studies. |
 
