@@ -13,7 +13,7 @@
 **Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **13-31x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
 
 ### Method
-**FastQx** implements the **pairwise Qₓ statistic** (Berg & Coop, 2014, PLoS Genetics) for detecting signatures of directional polygenic adaptation between two populations.
+**FastQx** implements the **pairwise Qₓ statistic** (Berg & Coop, 2014, PLoS Genetics) for detecting signatures of directional polygenic adaptation between two populations, using the exact Hudson (1992) F_ST estimator recommended by Bhatia et al. (2013).
 
 
 $$
