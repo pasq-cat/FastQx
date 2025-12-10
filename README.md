@@ -271,7 +271,7 @@ If you use this tool in published research, please cite:
 
 If the software contributed substantially, please also consider citing:
 
-> Pasquale Caterino (2025). FastQx: High-performance GPU implementation of the pairwise Qₓ statistic. [https://github.com/yourusername/FastQx](https://github.com/pasq-cat/FastQx)
+> Pasquale Caterino (2025). FastQx: High-performance GPU implementation of the pairwise Qₓ statistic. [https://github.com/pasq-cat/FastQx](https://github.com/pasq-cat/FastQx)
 
 ---
 
