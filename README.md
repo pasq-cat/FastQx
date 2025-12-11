@@ -8,7 +8,7 @@
 
 
 ---
-# **Version 1** Fast Pairwise Qₓ Statistic (CPU + GPU)
+#  Fast Pairwise Qₓ Statistic ( GPU)
 
 **Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **13-31x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
 
@@ -171,9 +171,9 @@ GPU Memory per batch ≈ batch_size × avg_n_snps × n_perm × 4 bytes × 7 (ove
 
 | Scenario | Recommended Version | Why |
 |----------|-------------------|-----|
-| **Mixed test sizes** (100-5000 SNPs) | **version 1** | Handles variety well, adaptive OOM |
+| **small dataset with Mixed test sizes** (100-5000 SNPs) | **version 1** | Handles variety well, adaptive OOM |
 | **Uniform test sizes** + large dataset | **version 2** | Maximum speed via batching |
-| **Speed critical** + 16GB+ GPU | **version 2** | Fastest option (tune batch size!) |
+| **Speed critical** +  GPU with large enough memory | **version 2** | Fastest option (tune batch size!) |
 | **Testing/debugging** | **version 1** | Simpler, easier to debug |
 
 ---
@@ -271,7 +271,7 @@ If you use this tool in published research, please cite:
 
 If the software contributed substantially, please also consider citing:
 
-> Pasquale Caterino (2025). FastQx: High-performance GPU implementation of the pairwise Qₓ statistic. [https://github.com/yourusername/FastQx](https://github.com/pasq-cat/FastQx)
+> Pasquale Caterino (2025). FastQx: High-performance GPU implementation of the pairwise Qₓ statistic. [https://github.com/pasq-cat/FastQx](https://github.com/pasq-cat/FastQx)
 
 ---
 
