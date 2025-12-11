@@ -171,7 +171,7 @@ GPU Memory per batch ≈ batch_size × avg_n_snps × n_perm × 4 bytes × 7 (ove
 
 | Scenario | Recommended Version | Why |
 |----------|-------------------|-----|
-| **Mixed test sizes** (100-5000 SNPs) | **version 1** | Handles variety well, adaptive OOM |
+| **small dataset with Mixed test sizes** (100-5000 SNPs) | **version 1** | Handles variety well, adaptive OOM |
 | **Uniform test sizes** + large dataset | **version 2** | Maximum speed via batching |
 | **Speed critical** + 16GB+ GPU | **version 2** | Fastest option (tune batch size!) |
 | **Testing/debugging** | **version 1** | Simpler, easier to debug |
