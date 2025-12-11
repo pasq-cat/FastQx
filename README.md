@@ -8,7 +8,7 @@
 
 
 ---
-# **Version 1** Fast Pairwise Qₓ Statistic (CPU + GPU)
+#  Fast Pairwise Qₓ Statistic ( GPU)
 
 **Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **13-31x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
 
