@@ -25,9 +25,7 @@ where:
 - Denominator: expected variance under neutral drift
 - $$\hat{F}_{\text{ST},i}$$ = **Hudson (1992) estimator as per Bhatia et al. (2013, Genome Research, Eq. S7)**:
 
-  $$
-  \hat{F}_{\text{ST},i} = \frac{(p_{1i} - p_{2i})^2 - p1*(1-p1)/n1 - p2*(1-p2)/n2   }{p_{1i}(1-p_{2i}) + p_{2i}(1-p_{1i})}
-  $$
+  $$\hat{F}_{\text{ST},i} = \frac{(p_{1i} - p_{2i})^2 - p1*(1-p1)/n1 - p2*(1-p2)/n2   }{p_{1i}(1-p_{2i}) + p_{2i}(1-p_{1i})}$$
 
 **v1.1 (current) **
 - added support to the correction terms in the hudson's fst as in eq. 10 of bathia (2103)
