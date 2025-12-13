@@ -164,7 +164,7 @@ GPU Memory per batch ≈ batch_size × avg_n_snps × n_perm × 4 bytes × 7 (ove
 
 | Batch Size | Time | Result |
 |------------|------|--------|
-| 7-8 | **34 sec** | ✅ Optimal |
+| 7-8 | **17 sec** | ✅ Optimal |
 | 9+ | 60+ min | ❌ OOM thrashing |
 
 ---
