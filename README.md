@@ -27,15 +27,15 @@ where:
 
   $$\hat{F}_{\text{ST},i} = \frac{(p_{1i} - p_{2i})^2 - p1*(1-p1)/n1 - p2*(1-p2)/n2   }{p_{1i}(1-p_{2i}) + p_{2i}(1-p_{1i})}$$
 
-**v1.1.1 (current) **
+**v1.1.1**
 - fixed support for neutrals when n1 and n2 sample sizes are used
 
 
-**v1.1 (current) **
+**v1.1 **
 - added support to the correction terms in the hudson's fst as in eq. 10 of bathia (2103)
 
 
-**v1.0 (current) **
+**v1.0**
 - Optional neutral SNP panel → global neutral F_ST replaces per-locus F_ST
 - Eliminates ascertainment bias from GWAS SNPs
 - closer to the full multivariate Qₓ even for closely related populations
