@@ -31,7 +31,7 @@ where:
 - fixed support for neutrals when n1 and n2 sample sizes are used
 
 
-**v1.1 **
+**v1.1**
 - added support to the correction terms in the hudson's fst as in eq. 10 of bathia (2103)
 
 
@@ -223,6 +223,7 @@ All GPU implementations produce **numerically identical** results to the CPU bas
 .
 ├── gpu_qx_demo.ipynb          # Main demonstration notebook
 ├── README.md                  # This file
+├── gpu_qx_functions.R                  #  R script with the functions
 ```
 
 ---
