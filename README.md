@@ -13,7 +13,7 @@
 **Fast implementation of the pairwise Qₓ polygenic selection statistic** introduced by Berg & Coop (2014) for detecting directional polygenic adaptation between population pairs. Achieves **13-31x speedup** over CPU baseline using NVIDIA GPU acceleration with CuPy.
 
 ### Method
-**FastQx** implements the **pairwise Qₓ statistic** (Berg & Coop, 2014, PLoS Genetics) for detecting signatures of directional polygenic adaptation between two populations, using the exact Hudson (1992) F_ST estimator recommended by Bhatia et al. (2013).
+**FastQx** implements the **pairwise Qₓ statistic** (Berg & Coop, 2014, PLoS Genetics) for detecting signatures of directional polygenic adaptation between two populations, using the  Hudson (1992) F_ST estimator reported by Bhatia et al. (2013).
 
 
 $$
@@ -58,8 +58,8 @@ Empirical p-values via **effect-size permutation null** (`sample(beta)`) — rob
 
 | Method | Time (303 tests ( same 300 + 3 problematic tests), 10k perms) | Speedup |  Batch size for a 16 gb 5060 ti | 
 |--------|------------------------------|---------|
-| **version 1 (Sequential GPU)** | **210 seconds** | **1x** | ---------|
-| **version 2 (Batch GPU)** | **~77 seconds** | ~2.8 | 7|
+| **version 1 (Sequential GPU)** | **210 seconds** | 1x | ---------|
+| **version 2 (Batch GPU)** | **~77 seconds** | **~3.7x** | 7|
 
 ### Stress test dataset: 100 tests with 2000-5000 SNPs each, 10,000 permutations
 
@@ -67,7 +67,7 @@ Empirical p-values via **effect-size permutation null** (`sample(beta)`) — rob
 | Method | Time (100 tests, 10k perms) | Speedup |  Batch size for a 16 gb 5060 ti | 
 |--------|------------------------------|---------|---------|
 | **version 1 (Sequential GPU)** | ~603.85 seconds | 1x | with out of memory errors|
-| **version 2 (Batch GPU)** | **~22 sec** | **~35x** | 7| no errors|
+| **version 2 (Batch GPU)** | **~19 sec** | **~32x** | 7| no errors|
 ---
 
 
