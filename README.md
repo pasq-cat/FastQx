@@ -195,7 +195,7 @@ gpu_cleanup <- function() {
   mempool$free_all_free()
   pinned_mempool <- cp$get_default_pinned_memory_pool()
   pinned_mempool$free_all_blocks()
-  gc(); gc(); gc()
+  gc();
 }
 
 # Use between function calls
